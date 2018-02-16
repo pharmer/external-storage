@@ -1158,7 +1158,12 @@ func (ctrl *ProvisionController) deleteVolumeOperation(volume *v1.PersistentVolu
 // getProvisionedVolumeNameForClaim returns PV.Name for the provisioned volume.
 // The name must be unique.
 func (ctrl *ProvisionController) getProvisionedVolumeNameForClaim(claim *v1.PersistentVolumeClaim) string {
-	return "pvc-" + string(claim.UID)
+	claimId := string(claim.UID)
+	claimId = "p" + strings.Replace(claimId, "-", "", -1)
+	if len(claimId) > 32 {
+		claimId = claimId[:32]
+	}
+	return claimId
 }
 
 // scheduleOperation starts given asynchronous operation on given volume. It
