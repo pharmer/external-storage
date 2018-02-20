@@ -285,7 +285,7 @@ func TestMultipleControllers(t *testing.T) {
 		ctrls := make([]*ProvisionController, test.numControllers)
 		stopChs := make([]chan struct{}, test.numControllers)
 		for i := 0; i < test.numControllers; i++ {
-			ctrls[i] = NewProvisionController(client, test.provisionerName, provisioner, defaultServerVersion, CreateProvisionedPVInterval(10*time.Millisecond))
+			ctrls[i] = NewProvisionController(client, test.provisionerName, provisioner, defaultServerVersion, NewDefaultNamer(), CreateProvisionedPVInterval(10*time.Millisecond))
 			ctrls[i].claimSource = claimSource
 			ctrls[i].claims.Add(newClaim("claim-1", "uid-1-1", "class-1", test.provisionerName, "", nil))
 			ctrls[i].classes.Add(newStorageClass("class-1", test.provisionerName))
@@ -666,6 +666,7 @@ func newTestProvisionController(
 		provisionerName,
 		provisioner,
 		serverGitVersion,
+		NewDefaultNamer(),
 		ResyncPeriod(resyncPeriod),
 		CreateProvisionedPVInterval(10*time.Millisecond),
 		LeaseDuration(2*resyncPeriod),
@@ -698,6 +699,7 @@ func newTestProvisionControllerSharedInformers(
 		provisionerName,
 		provisioner,
 		serverGitVersion,
+		NewDefaultNamer(),
 		ResyncPeriod(resyncPeriod),
 		CreateProvisionedPVInterval(10*time.Millisecond),
 		LeaseDuration(2*resyncPeriod),
@@ -1013,4 +1015,25 @@ func (r *claimReactor) React(action testclient.Action) (handled bool, ret runtim
 	}
 
 	return false, nil, nil
+}
+
+type MNamer struct {}
+var _ Namer  = &MNamer{}
+
+func newMNamer() Namer {
+	return &MNamer{}
+}
+func (n * MNamer) GetProvisionedVolumeNameForClaim(claim *v1.PersistentVolumeClaim) string {
+	return "this is not default namer"
+
+}
+
+func TestNamer(t *testing.T) {
+	namer := NewDefaultNamer()
+	claim := &v1.PersistentVolumeClaim{}
+	claim.UID = "default"
+	fmt.Println(namer.GetProvisionedVolumeNameForClaim(claim))
+
+	mnamer := newMNamer()
+	fmt.Println(mnamer.GetProvisionedVolumeNameForClaim(claim))
 }

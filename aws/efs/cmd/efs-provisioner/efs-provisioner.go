@@ -298,6 +298,7 @@ func main() {
 		provisionerName,
 		efsProvisioner,
 		serverVersion.GitVersion,
+		controller.NewDefaultNamer(),
 	)
 
 	pc.Run(wait.NeverStop)

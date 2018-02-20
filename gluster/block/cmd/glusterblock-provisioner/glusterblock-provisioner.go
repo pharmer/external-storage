@@ -937,6 +937,7 @@ func main() {
 		provName,
 		glusterBlockProvisioner,
 		serverVersion.GitVersion,
+		controller.NewDefaultNamer(),
 	)
 
 	pc.Run(wait.NeverStop)

@@ -411,6 +411,7 @@ func main() {
 		cephFSProvisioner,
 		serverVersion.GitVersion,
 		controller.MetricsPort(int32(*metricsPort)),
+		controller.NewDefaultNamer(),
 	)
 
 	pc.Run(wait.NeverStop)

@@ -53,6 +53,7 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/kubernetes/pkg/apis/core/v1/helper"
 	utilversion "k8s.io/kubernetes/pkg/util/version"
+	"k8s.io/kubernetes/pkg/util/goroutinemap"
 )
 
 // annClass annotation represents the storage class associated with a resource:
@@ -148,6 +149,7 @@ type ProvisionController struct {
 
 	hasRun     bool
 	hasRunLock *sync.Mutex
+	namer Namer
 }
 
 const (
@@ -404,6 +406,7 @@ func NewProvisionController(
 	provisionerName string,
 	provisioner Provisioner,
 	kubeVersion string,
+	namer Namer,
 	options ...func(*ProvisionController) error,
 ) *ProvisionController {
 	identity := uuid.NewUUID()
@@ -444,6 +447,7 @@ func NewProvisionController(
 		leaderElectorsMutex:           &sync.Mutex{},
 		hasRun:                        false,
 		hasRunLock:                    &sync.Mutex{},
+		namer:namer,
 	}
 
 	for _, option := range options {
@@ -1003,7 +1007,7 @@ func (ctrl *ProvisionController) provisionClaimOperation(claim *v1.PersistentVol
 	//  A previous doProvisionClaim may just have finished while we were waiting for
 	//  the locks. Check that PV (with deterministic name) hasn't been provisioned
 	//  yet.
-	pvName := ctrl.getProvisionedVolumeNameForClaim(claim)
+	pvName := ctrl.namer.GetProvisionedVolumeNameForClaim(claim)
 	volume, err := ctrl.client.CoreV1().PersistentVolumes().Get(pvName, metav1.GetOptions{})
 	if err == nil && volume != nil {
 		// Volume has been already provisioned, nothing to do.
@@ -1337,6 +1341,7 @@ func (ctrl *ProvisionController) deleteVolumeOperation(volume *v1.PersistentVolu
 	return nil
 }
 
+
 // getProvisionedVolumeNameForClaim returns PV.Name for the provisioned volume.
 // The name must be unique.
 func (ctrl *ProvisionController) getProvisionedVolumeNameForClaim(claim *v1.PersistentVolumeClaim) string {
@@ -1346,6 +1351,22 @@ func (ctrl *ProvisionController) getProvisionedVolumeNameForClaim(claim *v1.Pers
 		claimId = claimId[:32]
 	}
 	return claimId
+}
+
+// scheduleOperation starts given asynchronous operation on given volume. It
+// makes sure the operation is already not running.
+func (ctrl *ProvisionController) scheduleOperation(operationName string, operation func() error) {
+	glog.Infof("scheduleOperation[%s]", operationName)
+
+	err := ctrl.runningOperations.Run(operationName, operation)
+	if err != nil {
+		if goroutinemap.IsAlreadyExists(err) {
+			glog.V(4).Infof("operation %q is already running, skipping", operationName)
+		} else {
+			glog.Errorf("Error scheduling operaion %q: %v", operationName, err)
+		}
+	}
+
 }
 
 func (ctrl *ProvisionController) getStorageClassFields(name string) (string, map[string]string, error) {
