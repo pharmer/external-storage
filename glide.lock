@@ -1,8 +1,11 @@
 hash: ea8739d892f40a0fef6991b2cf9b2de78f3fd70eaaa97c54a23e8816486871f6
-updated: 2018-07-19T11:22:51.171673314+06:00
+updated: 2018-07-19T11:40:19.789928983+06:00
 imports:
-- name: cloud.google.com/go/compute/metadata
+- name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
+  subpackages:
+  - compute/metadata
+  - internal
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
 - name: github.com/aws/aws-sdk-go
