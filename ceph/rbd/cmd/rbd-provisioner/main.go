@@ -92,8 +92,8 @@ func main() {
 		prName,
 		rbdProvisioner,
 		serverVersion.GitVersion,
-		controller.MetricsPort(int32(*metricsPort)),
 		controller.NewDefaultNamer(),
+		controller.MetricsPort(int32(*metricsPort)),
 	)
 
 	pc.Run(wait.NeverStop)

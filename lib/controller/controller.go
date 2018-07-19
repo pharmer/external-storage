@@ -53,7 +53,6 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/kubernetes/pkg/apis/core/v1/helper"
 	utilversion "k8s.io/kubernetes/pkg/util/version"
-	"k8s.io/kubernetes/pkg/util/goroutinemap"
 )
 
 // annClass annotation represents the storage class associated with a resource:
@@ -1351,22 +1350,6 @@ func (ctrl *ProvisionController) getProvisionedVolumeNameForClaim(claim *v1.Pers
 		claimId = claimId[:32]
 	}
 	return claimId
-}
-
-// scheduleOperation starts given asynchronous operation on given volume. It
-// makes sure the operation is already not running.
-func (ctrl *ProvisionController) scheduleOperation(operationName string, operation func() error) {
-	glog.Infof("scheduleOperation[%s]", operationName)
-
-	err := ctrl.runningOperations.Run(operationName, operation)
-	if err != nil {
-		if goroutinemap.IsAlreadyExists(err) {
-			glog.V(4).Infof("operation %q is already running, skipping", operationName)
-		} else {
-			glog.Errorf("Error scheduling operaion %q: %v", operationName, err)
-		}
-	}
-
 }
 
 func (ctrl *ProvisionController) getStorageClassFields(name string) (string, map[string]string, error) {
