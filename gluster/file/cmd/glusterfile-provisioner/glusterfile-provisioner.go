@@ -962,6 +962,7 @@ func main() {
 		provName,
 		glusterfileProvisioner,
 		serverVersion.GitVersion,
+		controller.NewDefaultNamer(),
 	)
 
 	pc.Run(wait.NeverStop)

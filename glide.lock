@@ -1,15 +1,12 @@
 hash: ea8739d892f40a0fef6991b2cf9b2de78f3fd70eaaa97c54a23e8816486871f6
-updated: 2018-07-11T10:39:15.996793649-04:00
+updated: 2018-07-19T11:22:51.171673314+06:00
 imports:
-- name: cloud.google.com/go
+- name: cloud.google.com/go/compute/metadata
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
-  subpackages:
-  - compute/metadata
-  - internal
 - name: github.com/asaskevich/govalidator
   version: 7d2e70ef918f16bd6455529af38304d6d025c952
 - name: github.com/aws/aws-sdk-go
-  version: eeb327a02aac261d701e102e14993eae4d5ab844
+  version: ad774ec7aa8110faa8acdb510930f733a874ca4c
   subpackages:
   - aws
   - aws/awserr
@@ -30,6 +27,7 @@ imports:
   - aws/signer/v4
   - internal/sdkio
   - internal/sdkrand
+  - internal/sdkuri
   - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
@@ -92,9 +90,9 @@ imports:
 - name: github.com/fsnotify/fsnotify
   version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
 - name: github.com/ghodss/yaml
-  version: 73d445a93680fa1a78ae23a5839bad48f32ba1ee
+  version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
 - name: github.com/go-ini/ini
-  version: af26abd521cd7697481572fdbc4a53cbea3dde1b
+  version: 300e940a926eb277d3901b20bdfcc54928ad3642
 - name: github.com/go-ozzo/ozzo-validation
   version: 2c68ddd4ffc17941d8e940cb1264f68e1d8f0394
   subpackages:
@@ -105,7 +103,7 @@ imports:
   - proto
   - sortkeys
 - name: github.com/golang/glog
-  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
+  version: 44145f04b68cf362d9c4df2182967c2275eaefed
 - name: github.com/golang/groupcache
   version: 02826c3e79038b59d737d3b1c0a1d937f71a4433
   subpackages:
@@ -209,7 +207,7 @@ imports:
   subpackages:
   - pbutil
 - name: github.com/miekg/dns
-  version: 3e6e47bc11bc7f93f9e2f1c7bd6481ba4802808b
+  version: 5d001d020961ae1c184f9f8152fdc73810481677
 - name: github.com/mitchellh/mapstructure
   version: db1efb556f84b25a0a13a04aad883943538ad2e0
 - name: github.com/modern-go/concurrent
@@ -252,7 +250,7 @@ imports:
   subpackages:
   - xfs
 - name: github.com/Sirupsen/logrus
-  version: e54a77765aca7bbdd8e56c1c54f60579968b2dc9
+  version: 6d9ae300aaf85d6acd2e5424081c7fcddb21dab8
 - name: github.com/spf13/afero
   version: b28a7effac979219c2a2ed6205a4d70e4b1bcd02
   subpackages:
@@ -284,16 +282,11 @@ imports:
 - name: golang.org/x/net
   version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:
-  - bpf
   - context
   - context/ctxhttp
   - http2
   - http2/hpack
   - idna
-  - internal/iana
-  - internal/socket
-  - ipv4
-  - ipv6
   - lex/httplex
 - name: golang.org/x/oauth2
   version: a6bd8cefa1811bd24b86f8902872e4e8225f74c4
@@ -333,7 +326,7 @@ imports:
   - pubsub/v1
   - tpu/v1
 - name: google.golang.org/appengine
-  version: b1f26356af11148e710935ed1ac8a7f5702c7612
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
   - internal
   - internal/app_identity
@@ -706,7 +699,7 @@ testImports:
 - name: github.com/stretchr/objx
   version: 1a9d0bb9f541897e62256577b352fdbc1fb4fd94
 - name: github.com/stretchr/testify
-  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
   - mock
